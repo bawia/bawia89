@@ -1,0 +1,147 @@
+#ifndef HASHTABLE_H
+#define HASHTABLE_H
+#include <list>
+#include <vector>
+#include <cstdlib>
+
+using namespace std;
+
+template <class K, class Value>
+class HashTable{
+
+public:
+        enum NodeStat{
+            Empty, Deleted, Available
+        };
+
+
+        class HashNode{
+        public: K accessKey;
+                Value valueData;
+                HashNode * next;
+                HashNode(){}
+                HashNode(const K& key, const Value& value){
+                    accessKey(key), valueData(value), next(nullptr);
+                }
+
+
+                ~HashNode(){}
+                K getK(){return accessKey;}
+                Value& getValue(){return valueData;}
+                void setK(K& k){ accessKey = k;}
+                void setValue(Value& v){valueData = v;}
+                HashNode& getNext(){return next;}
+                void setNext(HashNode* n){next = n;}
+
+        private:
+
+        };
+
+        int bucketSize;
+
+
+        HashTable();
+        HashTable(const K&, int);
+        ~HashTable();
+        int size();
+        //int hash(int);
+        int MyHash(K&);
+        Value& getValue(K&);
+        bool isEmpty();
+        bool contain(Value&);
+        void addHash(K, Value);
+        void deletion(K&);
+        HashNode* find(K&);
+
+//        void addHash(Data&, HashNode*);
+//        void delHashData(Data&);
+//        HashNode * findHasData(Data&);
+
+
+private: vector<list<Value>> Table;
+
+};
+
+template<class K, class Value>
+HashTable<K, Value>::HashTable(){
+
+    bucketSize = 11;
+    for (int i =0; i < Table.size(); i++)
+    {
+        list<Value> temp;
+        Table.push_back(temp);
+    }
+
+}
+
+template<class K, class Value>
+HashTable<K, Value>::~HashTable(){
+
+}
+
+template<class K, class Value>
+int HashTable<K, Value>::size(){
+    return bucketSize;
+}
+
+//template<class K, class Value>
+//int HashTable<K, Value>::hash(int hashNum){
+//    return hashNum % bucketSize;
+//}
+
+template<class K, class Value>
+int HashTable<K, Value>::MyHash(K& KType){
+    std::hash<K> h;
+    size_t hash = h(KType) % bucketSize;
+    return Table[hash].MyHash(KType);
+
+}
+
+template<class K, class Value>
+void HashTable<K, Value>::addHash(K Key, Value val){
+    std::hash<K> k;
+    size_t k_num = k(Key) % bucketSize;
+
+        Table.at(k_num).add(val);
+
+
+}
+
+//template<class K, class Value>
+//void HashTable<K, Value>::addHash(){
+//    HashNode node();
+//    addHash(node.accessKey, node.valueData);
+//}
+
+template<class K, class Value>
+void HashTable<K, Value>::deletion(K& idx){
+    MyHash(idx);
+
+    if (Table[idx] == nullptr)
+        return 0;
+    else
+        Table.at(idx).remove();
+
+}
+
+template<class K, class Value>
+typename HashTable<K,Value>::HashNode* HashTable<K, Value>::find(K& index){
+    MyHash(index);
+
+    if (Table[index] == nullptr)
+        return nullptr;
+    else
+        return Table[index];
+
+}
+
+//template<class K, class Value>
+//bool HashTable<K, Value>::isEmpty(){
+//    return
+//}
+
+#endif // HASHTABLE_H
+
+//c++ recursive tree traversal
+
+
